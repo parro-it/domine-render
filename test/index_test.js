@@ -4,8 +4,8 @@ if (process.env.TEST_RELEASE) {
 }
 
 const domineRender = require(moduleRoot).default;
-const { renderCreate, renderClear } = require(moduleRoot);
-import { create, clear } from 'domine';
+const { renderCreate, renderClear, renderAppend, renderReplace } = require(moduleRoot);
+import { create, clear, append, replace } from 'domine';
 import d from 'domine';
 
 
@@ -30,6 +30,46 @@ describe('domineRender', () => {
     const doc = await emptyDoc();
     const result = domineRender(doc);
     result.should.be.a('function');
+  });
+});
+
+describe('renderReplace', () => {
+  it('is a function', async () => {
+    renderReplace.should.be.a('function');
+  });
+
+  it('replace elements in nodes', async () => {
+    const doc = await emptyDoc();
+    doc.body.innerHTML = '<div id="one">ciao</div><div id="two">salve</div>';
+    renderReplace(doc, replace('#one', d('main', d('article'))));
+    doc.body.innerHTML.should.be.equal('<div id="one"><main><article></article></main></div><div id="two">salve</div>');
+  });
+
+  it('replace elements in each matched node', async () => {
+    const doc = await emptyDoc();
+    doc.body.innerHTML = '<div id="one">ciao</div><div id="two"><p>salve</p></div>';
+    renderReplace(doc, replace('div', d('main')));
+    doc.body.innerHTML.should.be.equal('<div id="one"><main></main></div><div id="two"><main></main></div>');
+  });
+});
+
+describe('renderAppend', () => {
+  it('is a function', async () => {
+    renderAppend.should.be.a('function');
+  });
+
+  it('append elements to nodes', async () => {
+    const doc = await emptyDoc();
+    doc.body.innerHTML = '<div id="one">ciao</div><div id="two"></div>';
+    renderAppend(doc, append('#one', d('main', d('article'))));
+    doc.body.innerHTML.should.be.equal('<div id="one">ciao<main><article></article></main></div><div id="two"></div>');
+  });
+
+  it('append elements to each matched node', async () => {
+    const doc = await emptyDoc();
+    doc.body.innerHTML = '<div id="one">ciao</div><div id="two"></div>';
+    renderAppend(doc, append('div', d('main')));
+    doc.body.innerHTML.should.be.equal('<div id="one">ciao<main></main></div><div id="two"><main></main></div>');
   });
 });
 

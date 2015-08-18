@@ -55,3 +55,22 @@ export function renderClear(doc, clearOperation) {
   }
 }
 
+
+export function renderAppend(doc, appendOperation) {
+  const elms = doc.querySelectorAll(appendOperation.selector);
+  for (let elm of [...elms]) {
+    elm.appendChild(renderCreate(doc, appendOperation));
+  }
+}
+
+
+export function renderReplace(doc, replaceOperation) {
+  const elms = doc.querySelectorAll(replaceOperation.selector);
+  for (let elm of [...elms]) {
+    while (elm.firstChild) {
+      elm.removeChild(elm.firstChild);
+    }
+    elm.appendChild(renderCreate(doc, replaceOperation));
+  }
+}
+
