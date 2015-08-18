@@ -45,3 +45,13 @@ export function renderCreate(doc, createOperation) {
   return fragment;
 }
 
+
+export function renderClear(doc, clearOperation) {
+  const elms = doc.querySelectorAll(clearOperation.selector);
+  for (let elm of [...elms]) {
+    while (elm.firstChild) {
+      elm.removeChild(elm.firstChild);
+    }
+  }
+}
+

@@ -4,8 +4,8 @@ if (process.env.TEST_RELEASE) {
 }
 
 const domineRender = require(moduleRoot).default;
-const { renderCreate } = require(moduleRoot);
-import { create } from 'domine';
+const { renderCreate, renderClear } = require(moduleRoot);
+import { create, clear } from 'domine';
 import d from 'domine';
 
 
@@ -33,7 +33,27 @@ describe('domineRender', () => {
   });
 });
 
-describe.only('renderCreate', () => {
+describe('renderClear', () => {
+  it('is a function', async () => {
+    renderClear.should.be.a('function');
+  });
+
+  it('remove element children', async () => {
+    const doc = await emptyDoc();
+    doc.body.innerHTML = '<div id="one"><span>1</span><span>2</span></div>ciao';
+    renderClear(doc, clear('#one'));
+    doc.body.innerHTML.should.be.equal('<div id="one"></div>ciao');
+  });
+
+  it('remove element children from multiple match', async () => {
+    const doc = await emptyDoc();
+    doc.body.innerHTML = '<div id="one"><span>1</span><span>2</span></div>ciao';
+    renderClear(doc, clear('span'));
+    doc.body.innerHTML.should.be.equal('<div id="one"><span></span><span></span></div>ciao');
+  });
+});
+
+describe('renderCreate', () => {
   it('is a function', async () => {
     renderCreate.should.be.a('function');
   });
