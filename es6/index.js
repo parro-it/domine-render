@@ -1,9 +1,3 @@
-const domineRender = (document) => (domineOperation) => {
-
-};
-
-
-export default domineRender;
 
 function createNode(doc, vdom) {
   if (typeof vdom === 'string') {
@@ -26,6 +20,12 @@ function buildElement(elm, vdom) {
     } else if (propName === 'style') {
       for (let styleProp of Object.keys(propValue)) {
         elm.style[styleProp] = propValue[styleProp];
+      }
+    } else if (propName.startsWith('data-')) {
+      if (elm.dataset) {
+        elm.dataset[propName.slice(5)] = propValue;
+      } else {
+        elm.setAttribute(propName, propValue);
       }
     } else {
       elm[propName] = propValue;
@@ -110,3 +110,28 @@ export function renderQuery(doc, queryOperation) {
     return props;
   });
 }
+
+const domineRender = (document) => (...domineOperation) => {
+  const flattened = [];
+  for (let op of domineOperation) {
+    if (Array.isArray(op)) {
+      flattened.push(...op);
+    } else {
+      flattened.push(op);
+    }
+  }
+
+  for (let op of domineOperation) {
+    switch (op.operation) {
+      case 'create': return renderCreate(document, op);
+      case 'replace': return renderReplace(document, op);
+      case 'append': return renderAppend(document, op);
+      case 'query': return renderQuery(document, op);
+      case 'assign': return renderAssign(document, op);
+      case 'clear': return renderClear(document, op);
+      default: throw new Error(`Unknown operation ${op.operation}`);
+    }
+  }
+};
+
+export default domineRender;

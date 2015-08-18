@@ -169,6 +169,10 @@ describe('renderCreate', () => {
     await check('<main><article></article></main>', d('main', d('article')));
   });
 
+  it('render data attributes', async () => {
+    await check('<main data-custom="42"></main>', d('main', {'data-custom': 42}));
+  });
+
   it('support textNode', async () => {
     await check('<main>ciao</main>', d('main', 'ciao'));
   });
