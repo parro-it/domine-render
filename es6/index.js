@@ -99,3 +99,14 @@ export function renderAssign(doc, assignOperation) {
   }
 }
 
+
+export function renderQuery(doc, queryOperation) {
+  const elms = doc.querySelectorAll(queryOperation.selector);
+  return [...elms].map(elm => {
+    const props = {};
+    for (let prop of queryOperation.properties) {
+      props[prop] = elm[prop];
+    }
+    return props;
+  });
+}

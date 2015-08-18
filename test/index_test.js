@@ -4,8 +4,8 @@ if (process.env.TEST_RELEASE) {
 }
 
 const domineRender = require(moduleRoot).default;
-const { renderCreate, renderClear, renderAppend, renderReplace, renderAssign } = require(moduleRoot);
-import { create, clear, append, replace, assign } from 'domine';
+const { renderCreate, renderClear, renderAppend, renderReplace, renderAssign, renderQuery } = require(moduleRoot);
+import { create, clear, append, replace, assign, query } from 'domine';
 import d from 'domine';
 
 
@@ -30,6 +30,20 @@ describe('domineRender', () => {
     const doc = await emptyDoc();
     const result = domineRender(doc);
     result.should.be.a('function');
+  });
+});
+
+
+describe('renderQuery', () => {
+  it('is a function', async () => {
+    renderQuery.should.be.a('function');
+  });
+
+  it('query properties of existing nodes', async () => {
+    const doc = await emptyDoc();
+    doc.body.innerHTML = '<div id="one">ciao</div><div id="two">salve</div>';
+    const result = renderQuery(doc, query('div', ['id']));
+    result.should.be.deep.equal([{id: 'one'}, {id: 'two'}]);
   });
 });
 
