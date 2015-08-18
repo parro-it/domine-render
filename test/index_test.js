@@ -4,8 +4,8 @@ if (process.env.TEST_RELEASE) {
 }
 
 const domineRender = require(moduleRoot).default;
-const { renderCreate, renderClear, renderAppend, renderReplace } = require(moduleRoot);
-import { create, clear, append, replace } from 'domine';
+const { renderCreate, renderClear, renderAppend, renderReplace, renderAssign } = require(moduleRoot);
+import { create, clear, append, replace, assign } from 'domine';
 import d from 'domine';
 
 
@@ -32,6 +32,34 @@ describe('domineRender', () => {
     result.should.be.a('function');
   });
 });
+
+describe('renderAssign', () => {
+  it('is a function', async () => {
+    renderAssign.should.be.a('function');
+  });
+
+  it('assign properties to existing nodes', async () => {
+    const doc = await emptyDoc();
+    doc.body.innerHTML = '<div id="one">ciao</div><div id="two">salve</div>';
+    renderAssign(doc, assign('#one', d('assign', {className: 'test', lang: 'en'})));
+    doc.body.innerHTML.should.be.equal('<div id="one" class="test" lang="en">ciao</div><div id="two">salve</div>');
+  });
+
+  it('append children to existing nodes', async () => {
+    const doc = await emptyDoc();
+    doc.body.innerHTML = '<div id="one"><span></span></div><div id="two">salve</div>';
+    renderAssign(doc, assign('#one', d('assign', d('main.forse'))));
+    doc.body.innerHTML.should.be.equal('<div id="one"><span></span><main class="forse"></main></div><div id="two">salve</div>');
+  });
+
+  it('assign properties to each matched node', async () => {
+    const doc = await emptyDoc();
+    doc.body.innerHTML = '<div id="one">ciao</div><div id="two">salve</div>';
+    renderAssign(doc, assign('div', d('assign', {className: 'test', lang: 'en'})));
+    doc.body.innerHTML.should.be.equal('<div id="one" class="test" lang="en">ciao</div><div id="two" class="test" lang="en">salve</div>');
+  });
+});
+
 
 describe('renderReplace', () => {
   it('is a function', async () => {
