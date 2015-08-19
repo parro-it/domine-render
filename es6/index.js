@@ -121,14 +121,14 @@ const domineRender = (document) => (...domineOperation) => {
     }
   }
 
-  for (let op of domineOperation) {
+  for (let op of flattened) {
     switch (op.operation) {
-      case 'create': return renderCreate(document, op);
-      case 'replace': return renderReplace(document, op);
-      case 'append': return renderAppend(document, op);
-      case 'query': return renderQuery(document, op);
-      case 'assign': return renderAssign(document, op);
-      case 'clear': return renderClear(document, op);
+      case 'create': renderCreate(document, op); break;
+      case 'replace': renderReplace(document, op); break;
+      case 'append': renderAppend(document, op); break;
+      case 'query': renderQuery(document, op); break;
+      case 'assign': renderAssign(document, op); break;
+      case 'clear': renderClear(document, op); break;
       default: throw new Error(`Unknown operation ${op.operation}`);
     }
   }

@@ -328,22 +328,22 @@ var domineRender = function domineRender(document) {
     var _iteratorError9 = undefined;
 
     try {
-      for (var _iterator9 = _getIterator(domineOperation), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+      for (var _iterator9 = _getIterator(flattened), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
         var op = _step9.value;
 
         switch (op.operation) {
           case 'create':
-            return renderCreate(document, op);
+            renderCreate(document, op);break;
           case 'replace':
-            return renderReplace(document, op);
+            renderReplace(document, op);break;
           case 'append':
-            return renderAppend(document, op);
+            renderAppend(document, op);break;
           case 'query':
-            return renderQuery(document, op);
+            renderQuery(document, op);break;
           case 'assign':
-            return renderAssign(document, op);
+            renderAssign(document, op);break;
           case 'clear':
-            return renderClear(document, op);
+            renderClear(document, op);break;
           default:
             throw new Error('Unknown operation ' + op.operation);
         }
