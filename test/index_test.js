@@ -72,6 +72,13 @@ describe('renderAssign', () => {
     renderAssign(doc, assign('div', d('assign', {className: 'test', lang: 'en'})));
     doc.body.innerHTML.should.be.equal('<div id="one" class="test" lang="en">ciao</div><div id="two" class="test" lang="en">salve</div>');
   });
+
+  it('could remove classes', async () => {
+    const doc = await emptyDoc();
+    doc.body.innerHTML = '<div class="c1 c2">';
+    renderAssign(doc, assign('div', d('assign', {className: {c1: false}})));
+    doc.body.innerHTML.should.be.equal('<div class="c2"></div>');
+  });
 });
 
 
