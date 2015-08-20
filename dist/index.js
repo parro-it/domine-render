@@ -1,10 +1,14 @@
 'use strict';
 
+var _slicedToArray = require('babel-runtime/helpers/sliced-to-array')['default'];
+
 var _toConsumableArray = require('babel-runtime/helpers/to-consumable-array')['default'];
 
 var _getIterator = require('babel-runtime/core-js/get-iterator')['default'];
 
 var _Object$keys = require('babel-runtime/core-js/object/keys')['default'];
+
+var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
 
 Object.defineProperty(exports, '__esModule', {
   value: true
@@ -16,11 +20,42 @@ exports.renderReplace = renderReplace;
 exports.renderAssign = renderAssign;
 exports.renderQuery = renderQuery;
 
+var _objectPairs = require('object-pairs');
+
+var _objectPairs2 = _interopRequireDefault(_objectPairs);
+
+var noop = function noop() {};
+
 function createNode(doc, vdom) {
   if (typeof vdom === 'string') {
     return doc.createTextNode(vdom);
   }
   return doc.createElement(vdom.tagName);
+}
+
+function classListQuasiFill(elm) {
+  var currentAttrs = elm.getAttribute('class');
+  var current = currentAttrs ? currentAttrs.split(/\s/) : [];
+  var finish = function finish() {
+    return elm.setAttribute('class', current.join(' '));
+  };
+  var cl = {
+    add: function add(c) {
+      current.push(c);
+    },
+
+    remove: function remove(c) {
+      var idx = current.indexOf(c);
+      current.splice(idx, 1);
+    },
+
+    contains: function contains(c) {
+      var idx = current.indexOf(c);
+      return idx !== -1;
+    }
+  };
+
+  return { cl: cl, finish: finish };
 }
 
 function buildElement(elm, vdom) {
@@ -33,35 +68,57 @@ function buildElement(elm, vdom) {
       var propName = _step.value;
 
       var propValue = vdom.properties[propName];
+
       if (propName === 'className') {
+        var cl = undefined;
+        var finish = undefined;
         if (elm.classList) {
-          var _iteratorNormalCompletion2 = true;
-          var _didIteratorError2 = false;
-          var _iteratorError2 = undefined;
+          cl = elm.classList;
+          finish = noop;
+        } else {
+          var _classListQuasiFill = classListQuasiFill(elm);
 
-          try {
-            for (var _iterator2 = _getIterator(propValue), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-              var c = _step2.value;
+          cl = _classListQuasiFill.cl;
+          finish = _classListQuasiFill.finish;
+        }
 
-              elm.classList.add(c);
-            }
-          } catch (err) {
-            _didIteratorError2 = true;
-            _iteratorError2 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion2 && _iterator2['return']) {
-                _iterator2['return']();
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
+
+        try {
+          for (var _iterator2 = _getIterator((0, _objectPairs2['default'])(propValue)), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var _step2$value = _slicedToArray(_step2.value, 2);
+
+            var c = _step2$value[0];
+            var value = _step2$value[1];
+
+            if (value === null || value === false) {
+              if (cl.contains(c)) {
+                cl.remove(c);
               }
-            } finally {
-              if (_didIteratorError2) {
-                throw _iteratorError2;
+            } else {
+              if (!cl.contains(c)) {
+                cl.add(c);
               }
             }
           }
-        } else {
-          elm.setAttribute('class', propValue.join(' '));
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2['return']) {
+              _iterator2['return']();
+            }
+          } finally {
+            if (_didIteratorError2) {
+              throw _iteratorError2;
+            }
+          }
         }
+
+        finish();
       } else if (propName === 'style') {
         var _iteratorNormalCompletion3 = true;
         var _didIteratorError3 = false;

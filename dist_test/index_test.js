@@ -199,6 +199,50 @@ describe('renderAssign', function () {
       }
     }, null, _this);
   });
+
+  it('could remove classes with false', function callee$1$0() {
+    var doc;
+    return _regeneratorRuntime.async(function callee$1$0$(context$2$0) {
+      while (1) switch (context$2$0.prev = context$2$0.next) {
+        case 0:
+          context$2$0.next = 2;
+          return _regeneratorRuntime.awrap(emptyDoc());
+
+        case 2:
+          doc = context$2$0.sent;
+
+          doc.body.innerHTML = '<div class="c1 c2">';
+          renderAssign(doc, (0, _domine.assign)('div', (0, _domine2['default'])('assign', { className: { c1: false } })));
+          doc.body.innerHTML.should.be.equal('<div class="c2"></div>');
+
+        case 6:
+        case 'end':
+          return context$2$0.stop();
+      }
+    }, null, _this);
+  });
+
+  it('could remove classes with null', function callee$1$0() {
+    var doc;
+    return _regeneratorRuntime.async(function callee$1$0$(context$2$0) {
+      while (1) switch (context$2$0.prev = context$2$0.next) {
+        case 0:
+          context$2$0.next = 2;
+          return _regeneratorRuntime.awrap(emptyDoc());
+
+        case 2:
+          doc = context$2$0.sent;
+
+          doc.body.innerHTML = '<div class="c1 c2">';
+          renderAssign(doc, (0, _domine.assign)('div', (0, _domine2['default'])('assign', { className: { c1: null } })));
+          doc.body.innerHTML.should.be.equal('<div class="c2"></div>');
+
+        case 6:
+        case 'end':
+          return context$2$0.stop();
+      }
+    }, null, _this);
+  });
 });
 
 describe('renderReplace', function () {

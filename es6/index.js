@@ -1,3 +1,6 @@
+import pairs from 'object-pairs';
+
+const noop = () => {};
 
 function createNode(doc, vdom) {
   if (typeof vdom === 'string') {
@@ -6,17 +9,55 @@ function createNode(doc, vdom) {
   return doc.createElement(vdom.tagName);
 }
 
+function classListQuasiFill(elm) {
+  const currentAttrs = elm.getAttribute('class');
+  const current = currentAttrs ? currentAttrs.split(/\s/) : [];
+  const finish = () => elm.setAttribute('class', current.join(' '));
+  const cl = {
+    add(c) {
+      current.push(c);
+    },
+
+    remove(c) {
+      const idx = current.indexOf(c);
+      current.splice(idx, 1);
+    },
+
+    contains(c) {
+      const idx = current.indexOf(c);
+      return idx !== -1;
+    }
+  };
+
+  return {cl, finish};
+}
+
 function buildElement(elm, vdom) {
   for (let propName of Object.keys(vdom.properties)) {
     const propValue = vdom.properties[propName];
+
     if (propName === 'className') {
+      let cl;
+      let finish;
       if (elm.classList) {
-        for (let c of propValue) {
-          elm.classList.add(c);
-        }
+        [cl, finish] = [elm.classList, noop];
       } else {
-        elm.setAttribute('class', propValue.join(' '));
+        ({cl, finish} = classListQuasiFill(elm));
       }
+
+      for (let [c, value] of pairs(propValue)) {
+        if (value === null || value === false) {
+          if (cl.contains(c)) {
+            cl.remove(c);
+          }
+        } else {
+          if (!cl.contains(c)) {
+            cl.add(c);
+          }
+        }
+      }
+
+      finish();
     } else if (propName === 'style') {
       for (let styleProp of Object.keys(propValue)) {
         elm.style[styleProp] = propValue[styleProp];

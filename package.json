@@ -5,7 +5,9 @@
   "version": "1.0.1",
   "main": "dist/index.js",
   "dependencies": {
-    "babel-runtime": "^5.8.20"
+    "babel-runtime": "^5.8.20",
+    "domine": "^2.0.0",
+    "object-pairs": "^0.1.0"
   },
   "author": "parro-it",
   "scripts": {

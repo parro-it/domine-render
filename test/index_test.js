@@ -73,10 +73,17 @@ describe('renderAssign', () => {
     doc.body.innerHTML.should.be.equal('<div id="one" class="test" lang="en">ciao</div><div id="two" class="test" lang="en">salve</div>');
   });
 
-  it('could remove classes', async () => {
+  it('could remove classes with false', async () => {
     const doc = await emptyDoc();
     doc.body.innerHTML = '<div class="c1 c2">';
     renderAssign(doc, assign('div', d('assign', {className: {c1: false}})));
+    doc.body.innerHTML.should.be.equal('<div class="c2"></div>');
+  });
+
+  it('could remove classes with null', async () => {
+    const doc = await emptyDoc();
+    doc.body.innerHTML = '<div class="c1 c2">';
+    renderAssign(doc, assign('div', d('assign', {className: {c1: null}})));
     doc.body.innerHTML.should.be.equal('<div class="c2"></div>');
   });
 });
